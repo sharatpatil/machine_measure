@@ -15,6 +15,10 @@ module.exports = router;
 function createSchema(req, res, next) {
     const schema = Joi.object({
         deviceName: Joi.string().required(),
+        parameterName1: Joi.string(),
+        parameterName2: Joi.string(),
+        parameterName3: Joi.string(),
+        parameterName4: Joi.string(),
         parameter1: Joi.string(),
         parameter2: Joi.string(),
         parameter3: Joi.string(),
