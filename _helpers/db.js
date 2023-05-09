@@ -15,7 +15,7 @@ async function initialize() {
     const config = {
         host: 'sql.freedb.tech',
         user: 'freedb_machine_measure',
-        password: '3mX*ANS5rvb57sr',
+        password: 'k4scAXn!5gxVUCA',
         database: 'freedb_machine_measure'
     };
     const connection = await mysql.createConnection(config);
@@ -26,7 +26,7 @@ async function initialize() {
 
     // connect to db
     // const sequelize = new Sequelize(config.database, config.user, config.password, { dialect: 'mysql' });
-    const sequelize = new Sequelize('freedb_machine_measure', 'freedb_machine_measure', '3mX*ANS5rvb57sr', {
+    const sequelize = new Sequelize('freedb_machine_measure', 'freedb_machine_measure', 'k4scAXn!5gxVUCA', {
         host: 'sql.freedb.tech',
         dialect: 'mysql'
       });
