@@ -14,6 +14,7 @@ function model(sequelize) {
             primaryKey: true,
             defaultValue: () => 'DEV' + (Math.floor(Math.random() * 9000) + 1000).toString() 
         },
+        deviceNumber:{type:DataTypes.STRING},
         parameterName1: { type: DataTypes.STRING },
         parameterName2: { type: DataTypes.STRING },
         parameterName3: { type: DataTypes.STRING },
