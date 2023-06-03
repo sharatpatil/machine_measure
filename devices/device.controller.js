@@ -12,7 +12,7 @@ const emailTemplate = fs.readFileSync('view/mail_templates/device_created.html',
 
 const twilio = require('twilio');
 const accountSid = 'ACe24509a394076def91e05141acf4dd71';
-const authToken = 'ac550a7c944dcda6aff7501d12be8da0';
+const authToken = '0a18d4ef15f764ba1f9ca8b9405c4eef';
 const client = twilio(accountSid, authToken);
 
 // routes
@@ -109,7 +109,7 @@ const transporter = nodemailer.createTransport({
         // Send email
         const mailOptions = {
           from: 'j2wcampaign@joulestowatts.co',
-          to: 'sharath.kumar@joulestowatts.com',
+          to: ['sharath.kumar@joulestowatts.com','smithesh.sukumar@joulestowatts.com'],
           subject: 'Alert: Data Point Outside the Limits',
           html: emailBody
         };
