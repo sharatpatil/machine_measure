@@ -6,6 +6,11 @@ const authorize = require('_middleware/authorize');
 const deviceService = require('./device.service');
 const nodemailer = require('nodemailer');
 
+const fs = require('fs');
+
+const emailTemplate = fs.readFileSync('view/mail_templates/device_created.html', 'utf-8');
+
+
 
 // routes
 router.post('/', authorize(), createSchema, create);
@@ -60,7 +65,7 @@ const transporter = nodemailer.createTransport({
     try {
       const device = await deviceService.create(req.body, req.user.id);
 
-      const { parameter1, parameter2, parameter3, parameter4,parameter5, parameter6, parameter7, parameter8, parameter9, parameter10, upperlimit, lowerlimit } = req.body;
+      const { deviceNumber1,deviceNumber2,deviceNumber3,deviceNumber4,parameter1, parameter2, parameter3, parameter4,parameter5, parameter6, parameter7, parameter8, parameter9, parameter10, upperlimit, lowerlimit } = req.body;
 
       // Check conditions for sending email
 
@@ -78,12 +83,32 @@ const transporter = nodemailer.createTransport({
         (parameter9 <= lowerlimit || parameter9 >= upperlimit) ||
         (parameter10 <= lowerlimit || parameter10 >= upperlimit)
       ) {
+
+            // Generate email body from template
+      const emailBody = emailTemplate
+      .replace('{{deviceNumber1}}', deviceNumber1) 
+      .replace('{{deviceNumber2}}', deviceNumber2) 
+      .replace('{{deviceNumber3}}', deviceNumber3) 
+      .replace('{{deviceNumber4}}', deviceNumber4) 
+      .replace('{{parameter1}}', parameter1)
+      .replace('{{parameter2}}', parameter2)
+      .replace('{{parameter3}}', parameter3)
+      .replace('{{parameter4}}', parameter4)
+      .replace('{{parameter5}}', parameter5)
+      .replace('{{parameter6}}', parameter6)
+      .replace('{{parameter7}}', parameter7)
+      .replace('{{parameter8}}', parameter8)
+      .replace('{{parameter9}}', parameter9)
+      .replace('{{parameter10}}', parameter10)
+      .replace('{{lowerlimit}}', lowerlimit)
+      .replace('{{upperlimit}}', upperlimit);
+
         // Send email
         const mailOptions = {
           from: 'j2wcampaign@joulestowatts.co',
           to: 'sharath.kumar@joulestowatts.com',
-          subject: 'New Device Created',
-          text: `A new device has been created. & Crossed limits`
+          subject: 'Alert: Data Point Outside the Limits',
+          html: emailBody
         };
   
         transporter.sendMail(mailOptions, (error, info) => {
