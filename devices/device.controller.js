@@ -10,7 +10,10 @@ const fs = require('fs');
 
 const emailTemplate = fs.readFileSync('view/mail_templates/device_created.html', 'utf-8');
 
-
+const twilio = require('twilio');
+const accountSid = 'ACe24509a394076def91e05141acf4dd71';
+const authToken = 'ac550a7c944dcda6aff7501d12be8da0';
+const client = twilio(accountSid, authToken);
 
 // routes
 router.post('/', authorize(), createSchema, create);
@@ -55,8 +58,8 @@ function createSchema(req, res, next) {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'j2wcampaign@joulestowatts.co',
-      pass: 'nwvvrnjxuzgvkxfd'
+      user: 'sqcpack.co.in@gmail.com',
+      pass: 'sxiyujgfvijcwdrv'
     }
   });
 
@@ -119,6 +122,19 @@ const transporter = nodemailer.createTransport({
           }
         });
       }
+
+
+      // Send SMS notification
+    const phoneNumber =  ['+916364124241', '+918754428811'];// Replace with the recipient's phone number
+    const smsMessage = 'A new device has been created with Outside limit.'; // Replace with your SMS content
+
+    client.messages.create({
+      body: smsMessage,
+      from: '+13612669261', // Replace with your Twilio phone number
+      to: phoneNumber
+    })
+    .then(message => console.log('SMS sent:', message.sid))
+    .catch(error => console.error('SMS error:', error));
 
    
   
