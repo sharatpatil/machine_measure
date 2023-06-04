@@ -6,11 +6,17 @@ const authorize = require('_middleware/authorize');
 const deviceService = require('./device.service');
 const nodemailer = require('nodemailer');
 
+
+const configService = require('../config/config.service');
+const { Op } = require('sequelize');
+
+
 const fs = require('fs');
 
 const emailTemplate = fs.readFileSync('view/mail_templates/device_created.html', 'utf-8');
 
 const twilio = require('twilio');
+const { decodeBase64 } = require('bcryptjs');
 const accountSid = 'ACe24509a394076def91e05141acf4dd71';
 const authToken = '0a18d4ef15f764ba1f9ca8b9405c4eef';
 const client = twilio(accountSid, authToken);
@@ -63,86 +69,119 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// Function to retrieve upper limit and lower limit for a given parameter name
+async function getLimits(id) {
+  const config = await configService.getById(id);
+  if (!config) {
+    throw new Error(`Config not found for parameter: ${parameterName}`);
+  }
+  return {
+    upperLimit: config.upper_limit,
+    lowerLimit: config.lower_limit
+  };
+}
+
 
 async function create(req, res, next) {
   try {
     const device = await deviceService.create(req.body, req.user.id);
 
-    const { deviceNumber1, deviceNumber2, deviceNumber3, deviceNumber4, parameter1, parameter2, parameter3, parameter4, parameter5, parameter6, parameter7, parameter8, parameter9, parameter10, upperlimit, lowerlimit } = req.body;
+    const {
+      deviceNumber1,
+      deviceNumber2,
+      deviceNumber3,
+      deviceNumber4,
+      parameterName1,
+      parameterName2,
+      parameterName3,
+      parameterName4,
+      parameterName5,
+      parameterName6,
+      parameterName7,
+      parameterName8,
+      parameterName9,
+      parameterName10,
+      parameter1,
+      parameter2,
+      parameter3,
+      parameter4,
+      parameter5,
+      parameter6,
+      parameter7,
+      parameter8,
+      parameter9,
+      parameter10
+    } = req.body;
 
-    // Check conditions for sending email
+    const parameters = [
+      { paramName: parameterName1, paramValue: parseFloat(parameter1) },
+      { paramName: parameterName2, paramValue: parseFloat(parameter2) },
+      { paramName: parameterName3, paramValue: parseFloat(parameter3) },
+      { paramName: parameterName4, paramValue: parseFloat(parameter4) },
+      { paramName: parameterName5, paramValue: parseFloat(parameter5) },
+      { paramName: parameterName6, paramValue: parseFloat(parameter6) },
+      { paramName: parameterName7, paramValue: parseFloat(parameter7) },
+      { paramName: parameterName8, paramValue: parseFloat(parameter8) },
+      { paramName: parameterName9, paramValue: parseFloat(parameter9) },
+      { paramName: parameterName10, paramValue: parseFloat(parameter10) }
+    ];
 
-    console.log("lowerlimit", req.body)
-    console.log("upperlimit", upperlimit)
-    if (
-      (parameter1 <= lowerlimit || parameter1 >= upperlimit) ||
-      (parameter2 <= lowerlimit || parameter2 >= upperlimit) ||
-      (parameter3 <= lowerlimit || parameter3 >= upperlimit) ||
-      (parameter4 <= lowerlimit || parameter4 >= upperlimit) ||
-      (parameter5 <= lowerlimit || parameter5 >= upperlimit) ||
-      (parameter6 <= lowerlimit || parameter6 >= upperlimit) ||
-      (parameter7 <= lowerlimit || parameter7 >= upperlimit) ||
-      (parameter8 <= lowerlimit || parameter8 >= upperlimit) ||
-      (parameter9 <= lowerlimit || parameter9 >= upperlimit) ||
-      (parameter10 <= lowerlimit || parameter10 >= upperlimit)
-    ) {
+    for (let i = 0; i < parameters.length; i++) {
+      const { paramName, paramValue } = parameters[i];
 
-      // Generate email body from template
-      const emailBody = emailTemplate
-        .replace('{{deviceNumber1}}', deviceNumber1 || '')
-        .replace('{{deviceNumber2}}', deviceNumber2 || '')
-        .replace('{{deviceNumber3}}', deviceNumber3 || '')
-        .replace('{{deviceNumber4}}', deviceNumber4 || '')
-        .replace('{{parameter1}}', parameter1 || '')
-        .replace('{{parameter2}}', parameter2 || '')
-        .replace('{{parameter3}}', parameter3 || '')
-        .replace('{{parameter4}}', parameter4 || '')
-        .replace('{{parameter5}}', parameter5 || '')
-        .replace('{{parameter6}}', parameter6 || '')
-        .replace('{{parameter7}}', parameter7 || '')
-        .replace('{{parameter8}}', parameter8 || '')
-        .replace('{{parameter9}}', parameter9 || '')
-        .replace('{{parameter10}}', parameter10 || '')
-        .replace('{{lowerlimit}}', lowerlimit || '')
-        .replace('{{upperlimit}}', upperlimit || '');
+      if(paramValue){
+      const { upperLimit, lowerLimit } = await getLimits(i + 1);
+      
 
-      // Send email
-      const mailOptions = {
-        from: 'j2wcampaign@joulestowatts.co',
-        to: ['sharath.kumar@joulestowatts.com', 'support@sqcpack.co.in'],
-        subject: 'Alert: Data Point Outside the Limits',
-        html: emailBody
-      };
+      
+      if (paramValue && (paramValue < lowerLimit || paramValue > upperLimit)) {
+        console.log(paramValue, upperLimit, lowerLimit)
 
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
+        const emailBody = emailTemplate
+          .replace('{{deviceNumber1}}', deviceNumber1 || '')
+          .replace('{{deviceNumber2}}', deviceNumber2 || '')
+          .replace('{{deviceNumber3}}', deviceNumber3 || '')
+          .replace('{{deviceNumber4}}', deviceNumber4 || '')
+          .replace('{{paramName}}', paramName || '')
+          .replace('{{paramValue}}', paramValue || '');
+
+        const mailOptions = {
+          from: 'j2wcampaign@joulestowatts.co',
+          to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in'],
+          subject: 'Alert: Data Point Outside the Limits',
+          html: emailBody
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+
+         const phoneNumber = ['+916364124241', '+918754428811'];
+    const smsMessage = 'A new device has been created with Outside limit.';
+
+    client.messages
+      .create({
+        body: smsMessage,
+        from: '+13612669261',
+        to: phoneNumber
+      })
+      .then((message) => console.log('SMS sent:', message.sid))
+      .catch((error) => console.error('SMS error:', error));
+      }
     }
-
-
-    // Send SMS notification
-    const phoneNumber = ['+916364124241', '+918754428811'];// Replace with the recipient's phone number
-    const smsMessage = 'A new device has been created with Outside limit.'; // Replace with your SMS content
-
-    client.messages.create({
-      body: smsMessage,
-      from: '+13612669261', // Replace with your Twilio phone number
-      to: phoneNumber
-    })
-      .then(message => console.log('SMS sent:', message.sid))
-      .catch(error => console.error('SMS error:', error));
-
-
+  }
+   
 
     res.json(device);
   } catch (error) {
     next(error);
   }
-};
+}
+
 
 
 // async function create(req, res, next) {
