@@ -161,7 +161,7 @@ async function create(req, res, next) {
         });
 
          const phoneNumber = ['+916364124241', '+918754428811'];
-    const smsMessage = 'A new device has been created with Outside limit.';
+    const smsMessage = `Data Point Outside the Limits with the following details \n Part Number: ${deviceNumber1} \n Parameter Name: ${paramName} \n Value: ${paramValue}`;
 
     client.messages
       .create({
