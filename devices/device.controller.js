@@ -160,10 +160,22 @@ async function create(req, res, next) {
           }
         });
 
-         const phoneNumber = ['+919382740517', '+918754428811','+916364124241'];
+         const phoneNumber = ['+919382740517','+916364124241', '+918754428811'];
     const smsMessage = `Data Point Outside the Limits with the following details \n Part Number: ${deviceNumber1} \n Parameter Name: ${paramName} \n Value: ${paramValue}`;
 
-    client.messages
+    // client.messages
+    //   .create({
+    //     body: smsMessage,
+    //     from: '+13612669261',
+    //     to: phoneNumber
+    //   })
+    //   .then((message) => console.log('SMS sent:', message.sid))
+    //   .catch((error) => console.error('SMS error:', error));
+
+    const smsPromises = phoneNumber.map((phoneNumber) => {
+      
+
+      client.messages
       .create({
         body: smsMessage,
         from: '+13612669261',
@@ -171,6 +183,10 @@ async function create(req, res, next) {
       })
       .then((message) => console.log('SMS sent:', message.sid))
       .catch((error) => console.error('SMS error:', error));
+    });
+    
+   
+
       }
     }
   }
