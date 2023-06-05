@@ -146,8 +146,8 @@ async function create(req, res, next) {
           .replace('{{paramValue}}', paramValue || '');
 
         const mailOptions = {
-          from: 'j2wcampaign@joulestowatts.co',
-          to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in'],
+          from: 'sqcpack.co.in@gmail.com',
+          to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com'],
           subject: 'Alert: Data Point Outside the Limits',
           html: emailBody
         };
@@ -160,7 +160,7 @@ async function create(req, res, next) {
           }
         });
 
-         const phoneNumber = ['+916364124241', '+918754428811'];
+         const phoneNumber = ['+919382740517', '+918754428811','+916364124241'];
     const smsMessage = `Data Point Outside the Limits with the following details \n Part Number: ${deviceNumber1} \n Parameter Name: ${paramName} \n Value: ${paramValue}`;
 
     client.messages
