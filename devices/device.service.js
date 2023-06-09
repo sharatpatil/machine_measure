@@ -1,10 +1,13 @@
 const db = require('_helpers/db');
 const Device = require('./device.model.js');
+const { startOfDay, endOfDay } = require('date-fns');
 
 module.exports = {
     create,
     update,
-    delete: _delete
+    delete: _delete,
+    getAllDevices,
+    getDevicesCreatedToday
 };
 
 async function create(deviceParam, userId) {
@@ -41,3 +44,24 @@ async function getDeviceById(id) {
     if (!device) throw 'Device not found';
     return device;
 }
+
+async function getAllDevices() {
+    const devices = await db.Device.findAll();
+    return devices;
+  }
+  
+
+  async function getDevicesCreatedToday() {
+    const todayStart = startOfDay(new Date()); // Get the start of the current day
+    const todayEnd = endOfDay(new Date()); // Get the end of the current day
+  
+    const devices = await Device.find({
+      createdAt: {
+        $gte: todayStart,
+        $lte: todayEnd
+      }
+    });
+  
+    return devices;
+  }
+  

@@ -5,7 +5,7 @@ const validateRequest = require('_middleware/validate-request');
 const authorize = require('_middleware/authorize');
 const deviceService = require('./device.service');
 const nodemailer = require('nodemailer');
-
+const ExcelJS = require('exceljs');
 
 const configService = require('../config/config.service');
 const { Op } = require('sequelize');
@@ -26,7 +26,151 @@ router.post('/', authorize(), createSchema, create);
 router.put('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 
+// Define the API endpoint
+// router.get('/generate-excel', async (req, res) => {
+//   try {
+//     const devices = await deviceService.getAllDevices();
+//     const excelFilePath = await generateExcel(devices);
+//     sendEmailWithAttachment(excelFilePath);
+//     res.send('Email sent with Excel attachment.');
+//   } catch (error) {
+//     console.log('Error:', error);
+//     res.status(500).json({ error: 'Failed to generate and send email' });
+//   }
+// });
+
+router.get('/generate-excel', async (req, res) => {
+  try {
+    const devices = await deviceService.getAllDevices();
+    const excelBuffer = await generateExcel(devices);
+    sendEmailWithAttachment(excelBuffer);
+    res.send('Email sent with Excel attachment.');
+  } catch (error) {
+    console.log('Error:', error);
+    res.status(500).json({ error: 'Failed to fetch data from the database' });
+  }
+});
+
 module.exports = router;
+
+
+
+async function generateExcel(data) {
+  const ExcelJS = require('exceljs');
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Device Data');
+
+  const headers = [
+    'ID',
+    'Device ID',
+    'Device Number 1',
+    'Device Number 2',
+    'Device Number 3',
+    'Device Number 4',
+    'Parameter Name 1',
+    'Parameter Name 2',
+    'Parameter Name 3',
+    'Parameter Name 4',
+    'Parameter Name 5',
+    'Parameter Name 6',
+    'Parameter Name 7',
+    'Parameter Name 8',
+    'Parameter Name 9',
+    'Parameter Name 10',
+    'Device Name',
+    'Parameter 1',
+    'Parameter 2',
+    'Parameter 3',
+    'Parameter 4',
+    'Parameter 5',
+    'Parameter 6',
+    'Parameter 7',
+    'Parameter 8',
+    'Parameter 9',
+    'Parameter 10',
+    'User ID',
+    'Created At',
+    'Updated At'
+  ];
+
+  worksheet.addRow(headers);
+
+  data.forEach(row => {
+    const rowData = [
+      row.id,
+      row.deviceId,
+      row.deviceNumber1,
+      row.deviceNumber2,
+      row.deviceNumber3,
+      row.deviceNumber4,
+      row.parameterName1,
+      row.parameterName2,
+      row.parameterName3,
+      row.parameterName4,
+      row.parameterName5,
+      row.parameterName6,
+      row.parameterName7,
+      row.parameterName8,
+      row.parameterName9,
+      row.parameterName10,
+      row.deviceName,
+      row.parameter1,
+      row.parameter2,
+      row.parameter3,
+      row.parameter4,
+      row.parameter5,
+      row.parameter6,
+      row.parameter7,
+      row.parameter8,
+      row.parameter9,
+      row.parameter10,
+      row.UserId,
+      row.createdAt,
+      row.updatedAt
+    ];
+
+    console.log(row);
+
+    worksheet.addRow(rowData);
+  });
+
+  const excelBuffer = await workbook.xlsx.writeBuffer();
+  return excelBuffer;
+}
+
+
+
+function sendEmailWithAttachment(excelBuffer) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'sqcpack.co.in@gmail.com',
+      pass: 'sxiyujgfvijcwdrv'
+    }
+  });
+
+  const mailOptions = {
+    from: 'sqcpack.co.in@gmail.com',
+    to: 'sharathkumarpatil06@gmail.com',
+    subject: 'Excel Attachment',
+    text: 'Please find attached the Excel file.',
+    attachments: [
+      {
+        filename: 'generated.xlsx',
+        content: excelBuffer
+      }
+    ]
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Error:', error);
+    } else {
+      console.log('Email sent:', info.response);
+    }
+  });
+}
+
 
 function createSchema(req, res, next) {
   const schema = Joi.object({
