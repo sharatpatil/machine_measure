@@ -146,7 +146,7 @@ function sendEmailWithAttachment(excelBuffer) {
 
   const mailOptions = {
     from: 'sqcpack.co.in@gmail.com',
-    to: ['sharathkumarpatil06@gmail.com'],
+    to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com'],
     subject: 'IDS Data Report',
     text: 'Please find attached today data report',
     attachments: [
