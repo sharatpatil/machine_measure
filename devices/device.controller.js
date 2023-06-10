@@ -54,88 +54,83 @@ router.get('/generate-excel', async (req, res) => {
 module.exports = router;
 
 
-
 async function generateExcel(data) {
   const ExcelJS = require('exceljs');
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Device Data');
 
-  const headers = [
-    'ID',
-    'Device ID',
-    'Device Number 1',
-    'Device Number 2',
-    'Device Number 3',
-    'Device Number 4',
-    'Parameter Name 1',
-    'Parameter Name 2',
-    'Parameter Name 3',
-    'Parameter Name 4',
-    'Parameter Name 5',
-    'Parameter Name 6',
-    'Parameter Name 7',
-    'Parameter Name 8',
-    'Parameter Name 9',
-    'Parameter Name 10',
-    'Device Name',
-    'Parameter 1',
-    'Parameter 2',
-    'Parameter 3',
-    'Parameter 4',
-    'Parameter 5',
-    'Parameter 6',
-    'Parameter 7',
-    'Parameter 8',
-    'Parameter 9',
-    'Parameter 10',
-    'User ID',
-    'Created At',
-    'Updated At'
-  ];
-
-  worksheet.addRow(headers);
+  let hasData = false;
 
   data.forEach(row => {
     const rowData = [
-      row.id,
-      row.deviceId,
-      row.deviceNumber1,
-      row.deviceNumber2,
-      row.deviceNumber3,
-      row.deviceNumber4,
-      row.parameterName1,
-      row.parameterName2,
-      row.parameterName3,
-      row.parameterName4,
-      row.parameterName5,
-      row.parameterName6,
-      row.parameterName7,
-      row.parameterName8,
-      row.parameterName9,
-      row.parameterName10,
-      row.deviceName,
-      row.parameter1,
-      row.parameter2,
-      row.parameter3,
-      row.parameter4,
-      row.parameter5,
-      row.parameter6,
-      row.parameter7,
-      row.parameter8,
-      row.parameter9,
-      row.parameter10,
-      row.UserId,
-      row.createdAt,
-      row.updatedAt
+      row.id || '',
+      row.deviceId || '',
+      row.deviceNumber1 || '',
+      row.indenfier || '',
+      row.parameterName1 || '',
+      row.parameter1 || '',
+      row.parameterName2 || '',
+      row.parameter2 || '',
+      row.parameterName3 || '',
+      row.parameter3 || '',
+      row.parameterName4 || '',
+      row.parameter4 || '',
+      row.parameterName5 || '',
+      row.parameter5 || '',
+      row.parameterName6 || '',
+      row.parameter6 || '',
+      row.parameterName7 || '',
+      row.parameter7 || '',
+      row.parameterName8 || '',
+      row.parameter8 || '',
+      row.parameterName9 || '',
+      row.parameter9 || '',
+      row.parameterName10 || '',
+      row.parameter10 || '',
+      row.createdAt || ''
     ];
 
-    console.log(row);
-
     worksheet.addRow(rowData);
+
+    // Check if any row value is present
+    if (!hasData && Object.values(row).some(val => val !== null && val !== undefined && val !== '')) {
+      hasData = true;
+    }
   });
 
-  const excelBuffer = await workbook.xlsx.writeBuffer();
-  return excelBuffer;
+  if (hasData) {
+    const headers = [
+      'S.No',
+      'Device ID',
+      'Part Number',
+      'Component ID',
+      'Parameter Name',
+      '1',
+      'Parameter Name',
+      '2',
+      'Parameter Name',
+      '3',
+      'Parameter Name',
+      '4',
+      'Parameter Name',
+      '5',
+      'Parameter Name',
+      '6',
+      'Parameter Name',
+      '7',
+      'Parameter Name',
+      '8',
+      'Parameter Name',
+      '9',
+      'Parameter Name',
+      '10',
+      'Date'
+    ];
+
+    worksheet.spliceRows(1, 0, headers);
+  }
+
+  return workbook.xlsx.writeBuffer();
 }
 
 
@@ -151,9 +146,9 @@ function sendEmailWithAttachment(excelBuffer) {
 
   const mailOptions = {
     from: 'sqcpack.co.in@gmail.com',
-    to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com'],
-    subject: 'Excel Attachment',
-    text: 'Please find attached the Excel file.',
+    to: ['sharathkumarpatil06@gmail.com'],
+    subject: 'IDS Data Report',
+    text: 'Please find attached today data report',
     attachments: [
       {
         filename: 'generated.xlsx',
