@@ -151,7 +151,7 @@ function sendEmailWithAttachment(excelBuffer) {
 
   const mailOptions = {
     from: 'sqcpack.co.in@gmail.com',
-    to: 'sharathkumarpatil06@gmail.com',
+    to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com'],
     subject: 'Excel Attachment',
     text: 'Please find attached the Excel file.',
     attachments: [
@@ -199,8 +199,7 @@ function createSchema(req, res, next) {
     parameter8: Joi.string(),
     parameter9: Joi.string(),
     parameter10: Joi.string(),
-    lowerlimit: Joi.number(),
-    upperlimit: Joi.number()
+    indenfier:Joi.string(),
   });
   validateRequest(req, next, schema);
 }

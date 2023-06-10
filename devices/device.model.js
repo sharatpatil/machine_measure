@@ -39,6 +39,7 @@ function model(sequelize) {
         parameter8: { type: DataTypes.STRING },
         parameter9: { type: DataTypes.STRING },
         parameter10: { type: DataTypes.STRING },
+        indenfier: { type: DataTypes.STRING },
         UserId: { type: DataTypes.INTEGER, allowNull: false }
 
     };
