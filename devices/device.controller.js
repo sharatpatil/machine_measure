@@ -18,7 +18,7 @@ const emailTemplate = fs.readFileSync('view/mail_templates/device_created.html',
 const twilio = require('twilio');
 const { decodeBase64 } = require('bcryptjs');
 const accountSid = 'ACe24509a394076def91e05141acf4dd71';
-const authToken = '480c32116916928e32fc1ddec7f7d6a4';
+const authToken = '8246e4a02702b6d2121c63efd3ca4303';
 const client = twilio(accountSid, authToken);
 
 // routes
