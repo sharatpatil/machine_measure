@@ -41,7 +41,7 @@ router.delete('/:id', authorize(), _delete);
 
 router.get('/generate-excel', async (req, res) => {
   try {
-    const devices = await deviceService.getAllDevices();
+    const devices = await deviceService.getDevicesCreatedToday();
     const excelBuffer = await generateExcel(devices);
     sendEmailWithAttachment(excelBuffer);
     res.send('Email sent with Excel attachment.');

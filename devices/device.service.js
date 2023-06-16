@@ -1,6 +1,9 @@
 const db = require('_helpers/db');
 const Device = require('./device.model.js');
 const { startOfDay, endOfDay } = require('date-fns');
+const Sequelize = require('sequelize');
+
+const { Op } = Sequelize;
 
 module.exports = {
     create,
@@ -55,11 +58,12 @@ async function getAllDevices() {
     const todayStart = startOfDay(new Date()); // Get the start of the current day
     const todayEnd = endOfDay(new Date()); // Get the end of the current day
   
-    const devices = await Device.find({
-      createdAt: {
-        $gte: todayStart,
-        $lte: todayEnd
-      }
+    const devices = await db.Device.findAll({
+      where: {
+        created_at: {
+          [Op.between]: [todayStart, todayEnd],
+        },
+      },
     });
   
     return devices;
