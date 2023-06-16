@@ -18,7 +18,7 @@ const emailTemplate = fs.readFileSync('view/mail_templates/device_created.html',
 const twilio = require('twilio');
 const { decodeBase64 } = require('bcryptjs');
 const accountSid = 'ACe24509a394076def91e05141acf4dd71';
-const authToken = '143c45925b04c5d8c9cf759795b1e7f6';
+const authToken = '480c32116916928e32fc1ddec7f7d6a4';
 const client = twilio(accountSid, authToken);
 
 // routes
@@ -298,7 +298,7 @@ async function create(req, res, next) {
           }
         });
 
-         const phoneNumber = ['+919382740517'];
+         const phoneNumber = ['+919382740517','+916364124241'];
     const smsMessage = `Data Point Outside the Limits with the following details \n Part Number: ${deviceNumber1} \n Parameter Name: ${paramName} \n Value: ${paramValue}`;
 
     // client.messages
