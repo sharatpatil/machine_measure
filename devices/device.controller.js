@@ -146,7 +146,7 @@ function sendEmailWithAttachment(excelBuffer) {
 
   const mailOptions = {
     from: 'sqcpack.co.in@gmail.com',
-    to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com'],
+    to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com','dineshkumarred@gmail.com'],
     subject: 'IDS Data Report',
     text: 'Please find attached today data report',
     attachments: [
@@ -285,7 +285,7 @@ async function create(req, res, next) {
 
         const mailOptions = {
           from: 'sqcpack.co.in@gmail.com',
-          to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com'],
+          to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com','dineshkumarred@gmail.com'],
           subject: 'Alert: Data Point Outside the Limits',
           html: emailBody
         };
@@ -298,7 +298,7 @@ async function create(req, res, next) {
           }
         });
 
-         const phoneNumber = ['+919382740517','+916364124241'];
+         const phoneNumber = ['+919382740517','+916364124241','+918870330999'];
     const smsMessage = `Data Point Outside the Limits with the following details \n Part Number: ${deviceNumber1} \n Parameter Name: ${paramName} \n Value: ${paramValue}`;
 
     // client.messages
