@@ -303,7 +303,7 @@ async function create(req, res, next) {
           }
         });
 
-         const phoneNumber = ['+918870330999','+916364124241'];
+         const phoneNumber = ['+918870330999','+916364124241','+919382740517'];
     const smsMessage = `Data Point Outside the Limits with the following details \n Part Number: ${deviceNumber1} \n Parameter Name: ${paramName} \n Value: ${paramValue}`;
 
     // client.messages
