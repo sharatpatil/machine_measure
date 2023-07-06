@@ -264,6 +264,8 @@ async function create(req, res, next) {
       { paramName: parameterName10, paramValue: parseFloat(parameter10) }
     ];
 
+    let hasExceededLimits = false;
+
     for (let i = 0; i < parameters.length; i++) {
       const { paramName, paramValue } = parameters[i];
 
@@ -273,6 +275,9 @@ async function create(req, res, next) {
 
       
       if (paramValue && (paramValue < lowerLimit || paramValue > upperLimit)) {
+
+        hasExceededLimits = true;
+
         console.log(paramValue, upperLimit, lowerLimit)
 
         const emailBody = emailTemplate
@@ -330,7 +335,10 @@ async function create(req, res, next) {
   }
    
 
-    res.json(device);
+    res.json({
+      device,
+      hasExceededLimits // Include the flag in the response
+    });
   } catch (error) {
     next(error);
   }
