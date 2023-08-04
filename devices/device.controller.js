@@ -17,8 +17,8 @@ const emailTemplate = fs.readFileSync('view/mail_templates/device_created.html',
 
 const twilio = require('twilio');
 const { decodeBase64 } = require('bcryptjs');
-const accountSid = 'ACe24509a394076def91e05141acf4dd71';
-const authToken = '5b2f0a8740c6c99f99e0630fd8abd973';
+const accountSid = 'AC8e77af3cdc4978fb3a3e9ea45f5d2728';
+const authToken = '998a7d2b106b30e5755003c5c7abbdb3';
 const client = twilio(accountSid, authToken);
 
 // routes
@@ -321,7 +321,7 @@ async function create(req, res, next) {
       client.messages
       .create({
         body: smsMessage,
-        from: '+13612669261',
+        from: '+12187789426',
         to: phoneNumber
       })
       .then((message) => console.log('SMS sent:', message.sid))
