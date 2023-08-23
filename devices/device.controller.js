@@ -146,7 +146,7 @@ function sendEmailWithAttachment(excelBuffer) {
 
   const mailOptions = {
     from: 'sqcpack.co.in@gmail.com',
-    to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com'],
+    to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com','product@pqsi.co.in'],
     subject: 'IDS Data Report',
     text: 'Please find attached today data report',
     attachments: [
@@ -290,7 +290,7 @@ async function create(req, res, next) {
 
         const mailOptions = {
           from: 'sqcpack.co.in@gmail.com',
-          to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com'],
+          to: ['sharathkumarpatil06@gmail.com','support@sqcpack.co.in','nandapqsystems@gmail.com',' product@pqsi.co.in'],
           subject: 'Alert: Data Point Outside the Limits',
           html: emailBody
         };
