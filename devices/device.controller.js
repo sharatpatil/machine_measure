@@ -6,7 +6,8 @@ const authorize = require('_middleware/authorize');
 const deviceService = require('./device.service');
 const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
-
+const qs = require('qs');
+const axios = require('axios');
 const configService = require('../config/config.service');
 const { Op } = require('sequelize');
 
@@ -17,6 +18,7 @@ const emailTemplate = fs.readFileSync('view/mail_templates/device_created.html',
 
 const twilio = require('twilio');
 const { decodeBase64 } = require('bcryptjs');
+const { Parameter } = require('twilio/lib/twiml/VoiceResponse');
 const accountSid = 'AC8e77af3cdc4978fb3a3e9ea45f5d2728';
 const authToken = 'f432e8830e025fdde637a520479c98a5';
 const client = twilio(accountSid, authToken);
@@ -25,6 +27,57 @@ const client = twilio(accountSid, authToken);
 router.post('/', authorize(), createSchema, create);
 router.put('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
+
+
+// Define the route that triggers the function
+router.get('/send_alert', async (req, res) => {
+  const part = req.query.part;
+  const parameter = req.query.parameter;
+  const values = req.query.values;
+
+  if (!part || !parameter || !values) {
+    return res.status(400).json({ error: 'Missing required query parameters' });
+  }
+
+  try {
+    const result = await myTriggeredFunction(part, parameter, values);
+    res.json({ message: 'Alert sent successfully', details: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error sending alert' });
+  }
+});
+
+// Define the function that sends an SMS using 2Factor.in API
+async function myTriggeredFunction(part, parameter, values) {
+  try {
+    const data = qs.stringify({
+      'module': 'TRANS_SMS',
+      'apikey': '8f9f930b-01f3-11ee-addf-0200cd936042',
+      'to': '916364124241',
+      'from': 'PQSIVM',
+      'msg': `Data Points Outside the Limits. Following are the details
+    Part Number: ${part}
+    Parameter Name: ${parameter}
+    Value: ${values} -PQSI`
+    });
+
+    const config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://2factor.in/API/R1/',
+      headers: {},
+      data: data
+    };
+
+    const response = await axios(config);
+    console.log(JSON.stringify(response.data));
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error; // Re-throw the error to be caught by the caller
+  }
+}
 
 // Define the API endpoint
 // router.get('/generate-excel', async (req, res) => {
