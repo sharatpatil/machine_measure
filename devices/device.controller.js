@@ -20,7 +20,7 @@ const twilio = require('twilio');
 const { decodeBase64 } = require('bcryptjs');
 const { Parameter } = require('twilio/lib/twiml/VoiceResponse');
 const accountSid = 'AC8e77af3cdc4978fb3a3e9ea45f5d2728';
-const authToken = 'f432e8830e025fdde637a520479c98a5';
+const authToken = '66d4da4430b9c7536e99d7f3e246ef88';
 const client = twilio(accountSid, authToken);
 
 // routes
@@ -54,7 +54,7 @@ async function myTriggeredFunction(part, parameter, values) {
     const data = qs.stringify({
       'module': 'TRANS_SMS',
       'apikey': '8f9f930b-01f3-11ee-addf-0200cd936042',
-      'to': '916364124241',
+      'to': '919382740517,916463124241',
       'from': 'PQSIVM',
       'msg': `Data Points Outside the Limits. Following are the details
     Part Number: ${part}
@@ -79,18 +79,7 @@ async function myTriggeredFunction(part, parameter, values) {
   }
 }
 
-// Define the API endpoint
-// router.get('/generate-excel', async (req, res) => {
-//   try {
-//     const devices = await deviceService.getAllDevices();
-//     const excelFilePath = await generateExcel(devices);
-//     sendEmailWithAttachment(excelFilePath);
-//     res.send('Email sent with Excel attachment.');
-//   } catch (error) {
-//     console.log('Error:', error);
-//     res.status(500).json({ error: 'Failed to generate and send email' });
-//   }
-// });
+
 
 router.get('/generate-excel', async (req, res) => {
   try {
@@ -359,14 +348,6 @@ async function create(req, res, next) {
          const phoneNumber = ['+916364124241','+919382740517'];
     const smsMessage = `Data Point Outside the Limits with the following details \n Part Number: ${deviceNumber1} \n Parameter Name: ${paramName} \n Value: ${paramValue}`;
 
-    // client.messages
-    //   .create({
-    //     body: smsMessage,
-    //     from: '+13612669261',
-    //     to: phoneNumber
-    //   })
-    //   .then((message) => console.log('SMS sent:', message.sid))
-    //   .catch((error) => console.error('SMS error:', error));
 
     const smsPromises = phoneNumber.map((phoneNumber) => {
       
@@ -380,6 +361,17 @@ async function create(req, res, next) {
       .then((message) => console.log('SMS sent:', message.sid))
       .catch((error) => console.error('SMS error:', error));
     });
+
+    // try {
+    //   const result = await myTriggeredFunction(deviceNumber1, paramName, paramValue);
+    //   if(result){
+    //     console.log('SMS sent:',result);
+    //   }
+     
+    // } catch (error) {
+    //   console.error('SMS error:', error);
+     
+    // }
     
    
 
