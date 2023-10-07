@@ -20,7 +20,7 @@ const twilio = require('twilio');
 const { decodeBase64 } = require('bcryptjs');
 const { Parameter } = require('twilio/lib/twiml/VoiceResponse');
 const accountSid = 'AC8e77af3cdc4978fb3a3e9ea45f5d2728';
-const authToken = '66d4da4430b9c7536e99d7f3e246ef88';
+const authToken = 'ba7640d41d11626969548e953b6d106a';
 const client = twilio(accountSid, authToken);
 
 // routes
