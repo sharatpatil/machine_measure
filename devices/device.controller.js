@@ -54,7 +54,7 @@ async function myTriggeredFunction(part, parameter, values) {
     const data = qs.stringify({
       'module': 'TRANS_SMS',
       'apikey': '8f9f930b-01f3-11ee-addf-0200cd936042',
-      'to': '919382740517,916463124241',
+      'to': '916364124241',
       'from': 'PQSIVM',
       'msg': `Data Points Outside the Limits. Following are the details
     Part Number: ${part}
@@ -290,7 +290,7 @@ async function create(req, res, next) {
       parameter7,
       parameter8,
       parameter9,
-      parameter10
+      parameter10,
     } = req.body;
 
     const parameters = [
