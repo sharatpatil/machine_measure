@@ -53,7 +53,13 @@ function getAll(req, res, next) {
 }
 
 function getCurrent(req, res, next) {
-    res.json(req.user);
+    
+    if(req.user.ip){
+        return res.json(req.user);
+    }else{
+        return res.status(401).json({ message: 'Inactive' });
+    }
+    
 }
 
 function getById(req, res, next) {
