@@ -2,6 +2,7 @@ const db = require('_helpers/db');
 const Device = require('./device.model.js');
 const { startOfDay, endOfDay } = require('date-fns');
 const Sequelize = require('sequelize');
+const moment = require('moment');
 
 const { Op } = Sequelize;
 
@@ -10,7 +11,9 @@ module.exports = {
     update,
     delete: _delete,
     getAllDevices,
-    getDevicesCreatedToday
+    getDevicesCreatedToday,
+    getAllDevicesByField,
+    getTop10DevicesByField
 };
 
 async function create(deviceParam, userId) {
@@ -68,4 +71,40 @@ async function getAllDevices() {
   
     return devices;
   }
+
+  async function getAllDevicesByField(fieldName) {
+    try {
+      // Query the database to get devices based on the specified field
+      const devices = await  db.Device.findAll({
+        attributes: ['createdAt', fieldName], // Include only createdAt and the specified field
+        raw: true, // Return plain JSON objects
+      });
+
+      return devices;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  async function getTop10DevicesByField(fieldName) {
+    try {
+      // Query the database to get the top 10 devices based on the specified field
+      const devices = await db.Device.findAll({
+        attributes: ['createdAt', fieldName], // Include only createdAt and the specified field
+        order: [['createdAt', 'DESC']], // Order by createdAt in descending order
+        limit: 10, // Limit the results to 10
+        raw: true, // Return plain JSON objects
+      });
   
+      // Format the createdAt dates
+      const formattedDevices = devices.map(device => ({
+        ...device,
+        createdAt: moment(device.createdAt).format('YYYY-MM-DD'),
+      }));
+  
+      return formattedDevices;
+    } catch (error) {
+      throw error;
+    }
+  }
