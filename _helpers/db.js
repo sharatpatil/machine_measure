@@ -16,7 +16,7 @@ async function initialize() {
         host: 'sql.freedb.tech',
         user: 'freedb_ids_msg',
         password: 'B&?C*6tCs*x7j9Z',
-        database: 'freedb_IDS_msg'
+        database: 'freedb_IDS_msg' 
     };
     const connection = await mysql.createConnection(config);
     // const connection = await mysql.createConnection({ host, port, user, password });
